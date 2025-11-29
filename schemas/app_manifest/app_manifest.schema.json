@@ -1,0 +1,64 @@
+{
+  "$id": "https://interoperabledata.org/schemas/app_manifest/app_manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App Manifest",
+  "type": "object",
+  "properties": {
+    "in": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/inputDescriptor" }
+    },
+    "out": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/outputDescriptor" }
+    }
+  },
+  "required": ["in", "out"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "inputDescriptor": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "schema": { "type": "string" }
+          },
+          "required": ["schema"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          },
+          "required": ["files"],
+          "additionalProperties": false
+        }
+      ]
+    },
+
+    "outputDescriptor": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "schema": { "type": "string" }
+          },
+          "required": ["schema"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "file": { "type": "string" }
+          },
+          "required": ["file"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
