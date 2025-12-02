@@ -1,0 +1,18 @@
+{
+  "in": [
+    {
+      "name": "A",
+      "schema": "https://interoperabledata.org/schemas/values/Number.simple.1_0.json"
+    },
+    {
+      "name": "B",
+      "schema": "https://interoperabledata.org/schemas/values/Number.simple.1_0.json"
+    }
+  ],
+  "out": [
+    {
+      "name": "result",
+      "schema": "https://interoperabledata.org/schemas/values/Number.simple.1_0.json"
+    }
+  ]
+}

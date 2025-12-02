@@ -1,7 +1,7 @@
 {
-  "$id": "https://example.com/schemas/app_manifest.schema.json",
+  "$id": "https://interoperabledata.org/schemas/function_manifest/function_manifest.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "App Manifest",
+  "title": "Function Manifest",
   "type": "object",
   "properties": {
     "in": {
@@ -22,20 +22,22 @@
       "oneOf": [
         {
           "properties": {
+            "name": { "type": "string" },
             "schema": { "type": "string" }
           },
-          "required": ["schema"],
+          "required": ["name", "schema"],
           "additionalProperties": false
         },
         {
           "properties": {
+            "name": { "type": "string" },
             "files": {
               "type": "array",
               "items": { "type": "string" },
               "minItems": 1
             }
           },
-          "required": ["files"],
+          "required": ["name", "files"],
           "additionalProperties": false
         }
       ]
@@ -46,16 +48,18 @@
       "oneOf": [
         {
           "properties": {
+            "name": { "type": "string" },
             "schema": { "type": "string" }
           },
-          "required": ["schema"],
+          "required": ["name", "schema"],
           "additionalProperties": false
         },
         {
           "properties": {
+            "name": { "type": "string" },
             "file": { "type": "string" }
           },
-          "required": ["file"],
+          "required": ["name", "file"],
           "additionalProperties": false
         }
       ]

@@ -1,0 +1,7 @@
+{
+  "$id": "https://interoperabledata.org/schemas/values/Number.simple.1_0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Simple Number",
+  "description": "A JSON document whose root value is a single number.",
+  "type": "number"
+}
