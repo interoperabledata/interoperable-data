@@ -8,7 +8,7 @@ from .errors import RunnerError, print_info
 from .exporters import export_csv, export_json, export_xlsx
 from .fs_utils import clear_directory_contents, list_files_in_dir
 from .manifests import load_manifest_for_function
-from .paths import DATA_FUNCTIONS_ROOT, WORKFLOW_ROOT
+from .paths import FUNCTIONS_ROOT, WORKFLOW_ROOT
 from .schema_utils import load_schema_for_id, validate_json_against_schema
 from .workflow import CopyCommand, Endpoint, parse_endpoint
 
@@ -27,7 +27,7 @@ def convert_file_to_schema(
         )
 
     try:
-        from converters import convert_to_schema  
+        from converters import convert_to_schema  # type: ignore
     except ImportError:
         raise RunnerError(
             "Conversion helper module 'converters' not found. "
@@ -60,6 +60,34 @@ def convert_file_to_schema(
         ) from e
 
 
+def _ensure_node_registered(
+    cmd: CopyCommand,
+    node_name: str,
+    node_to_function: Dict[str, str],
+) -> None:
+    """
+    Ensure node_name is known in node_to_function.
+    If not, try to infer function_name == node_name and validate by checking manifest.
+    """
+    if node_name in node_to_function:
+        return
+
+    function_name = node_name
+    function_dir = FUNCTIONS_ROOT / function_name
+    manifest_path = function_dir / "manifest.json"
+
+    if not manifest_path.is_file():
+        # No matching function folder/manifest → real unknown node
+        raise RunnerError(
+            f"Error on line {cmd.line_no}: unknown node '{node_name}' in '{cmd.raw}'."
+        )
+
+    # Will raise RunnerError if manifest is malformed
+    load_manifest_for_function(function_name)
+
+    node_to_function[node_name] = function_name
+
+
 def _resolve_src_dir_for_endpoint(
     cmd: CopyCommand,
     endpoint: Endpoint,
@@ -70,11 +98,10 @@ def _resolve_src_dir_for_endpoint(
 
     src_node = endpoint.node_name  # type: ignore
     src_port = endpoint.port_name  # type: ignore
-    if src_node not in node_to_function:
-        raise RunnerError(
-            f"Error on line {cmd.line_no}: unknown node '{src_node}' in '{cmd.raw}'."
-        )
-    return DATA_FUNCTIONS_ROOT / src_node / "outputs" / src_port
+
+    _ensure_node_registered(cmd, src_node, node_to_function)
+
+    return FUNCTIONS_ROOT / src_node / "outputs" / src_port
 
 
 def copy_to_function_input(
@@ -87,10 +114,7 @@ def copy_to_function_input(
     node_name = dest_endpoint.node_name  # type: ignore
     port_name = dest_endpoint.port_name  # type: ignore
 
-    if node_name not in node_to_function:
-        raise RunnerError(
-            f"Error on line {cmd.line_no}: unknown node '{node_name}' in '{cmd.raw}'."
-        )
+    _ensure_node_registered(cmd, node_name, node_to_function)
 
     function_name = node_to_function[node_name]
     manifest = load_manifest_for_function(function_name)

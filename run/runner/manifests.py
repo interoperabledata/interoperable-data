@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Dict
 
 from .errors import RunnerError
-from .paths import DATA_FUNCTIONS_ROOT
+from .paths import FUNCTIONS_ROOT
 
 
 @dataclass
@@ -21,7 +21,7 @@ def load_manifest_for_function(function_name: str) -> FunctionManifest:
     if function_name in _manifest_cache:
         return _manifest_cache[function_name]
 
-    function_dir = DATA_FUNCTIONS_ROOT / function_name
+    function_dir = FUNCTIONS_ROOT / function_name
     manifest_path = function_dir / "manifest.json"
     if not manifest_path.is_file():
         raise RunnerError(

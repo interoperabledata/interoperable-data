@@ -5,19 +5,19 @@ from .functions import run_function
 from .env_utils import ensure_core_dependencies, load_dotenv_if_present
 from .errors import RunnerError, print_error, print_info
 from .fs_utils import clear_directory_contents
-from .paths import DATA_FUNCTIONS_ROOT
+from .paths import FUNCTIONS_ROOT
 from .copy_ops import execute_copy
 from .workflow import WorkflowCommand, parse_workflow
 
 
 def clean_generated() -> None:
-    if not DATA_FUNCTIONS_ROOT.is_dir():
+    if not FUNCTIONS_ROOT.is_dir():
         print_info("No functions/ directory found; nothing to clean.")
         return
 
     print_info("Cleaning generated inputs/outputs under functions/...")
 
-    for entry in DATA_FUNCTIONS_ROOT.iterdir():
+    for entry in FUNCTIONS_ROOT.iterdir():
         if not entry.is_dir():
             continue
         inputs_dir = entry / "inputs"

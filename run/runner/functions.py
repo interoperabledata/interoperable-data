@@ -6,11 +6,11 @@ from typing import Tuple
 
 from .errors import RunnerError, print_info
 from .manifests import load_manifest_for_function
-from .paths import DATA_FUNCTIONS_ROOT, SCHEMAS_ROOT
+from .paths import FUNCTIONS_ROOT, SCHEMAS_ROOT
 
 
 def ensure_function_dependencies(function_name: str) -> None:
-    function_dir = DATA_FUNCTIONS_ROOT / function_name
+    function_dir = FUNCTIONS_ROOT / function_name
     if not function_dir.is_dir():
         raise RunnerError(
             f"Data function directory not found for '{function_name}': {function_dir}"
@@ -38,7 +38,7 @@ def ensure_function_dependencies(function_name: str) -> None:
 
 
 def ensure_node_io_dirs(node_name: str) -> Tuple[Path, Path]:
-    node_dir = DATA_FUNCTIONS_ROOT / node_name
+    node_dir = FUNCTIONS_ROOT / node_name
     inputs_dir = node_dir / "inputs"
     outputs_dir = node_dir / "outputs"
     inputs_dir.mkdir(parents=True, exist_ok=True)
@@ -47,7 +47,7 @@ def ensure_node_io_dirs(node_name: str) -> Tuple[Path, Path]:
 
 
 def run_function(function_name: str, node_name: str) -> None:
-    function_dir = DATA_FUNCTIONS_ROOT / function_name
+    function_dir = FUNCTIONS_ROOT / function_name
     main_py = function_dir / "main.py"
     if not main_py.is_file():
         raise RunnerError(
